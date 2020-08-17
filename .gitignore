@@ -1,0 +1,8 @@
+
+/.idea
+/course/migrations
+/course/__pycache__
+/server/__pycache__
+/server/settings.py
+/static
+db.sqlite3
