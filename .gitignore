@@ -1,7 +1,9 @@
 
 /.idea
 /course/migrations
+/api/migrations
 /course/__pycache__
+/api/__pycache__
 /server/__pycache__
 /server/settings.py
 /static
