@@ -18,5 +18,5 @@ from django.urls import path
 
 
 urlpatterns = [
-    path('', course_views.connect_prof_course),
+    path('', course_views.cal_grade),
 ]

@@ -62,3 +62,85 @@ def connect_prof_course(request):
         print(n)
         n += 1
     return HttpResponse('Success')
+
+def importcomment(request):
+    num = 1
+    path=os.path.join(settings.BASE_DIR,'static')
+    path=os.path.join(path,'rank.csv')
+    csvFile = open(path, "r",encoding='utf-8')
+    reader = csv.reader(csvFile)
+    for item in reader:
+        course = models.prof_with_course.objects.filter(
+            prof=models.prof_info.objects.filter(name=item[0]).first(),
+            course=models.course_noporf.objects.filter(New_code=item[1]).first()
+        )
+        if len(course)!=0:
+            for i in range(2,10):
+                if item[i]=='':
+                    item[i]='0'
+                if item[i]=='每次' or item[i]=='多种' or item[i]=='个人' or  item[i]=='多種' or item[i]=='個人':
+                    item[i]='1.0'
+                if item[i]=='抽查' or item[i]=='小组' or item[i]=='小組':
+                    item[i]='2.5'
+                if item[i]=='不需要':
+                    item[i]='5.0'
+                if item[i]=='null':
+                    item[i]='0.0'
+            comment=models.comment(course=course.first(),
+                                   attendance=float(item[2]),
+                                   pre=float(item[3]),
+                                   grade=float(item[4]),
+                                   hard=float(item[5]),
+                                   reward=float(item[6]),
+                                   recommend=float(item[7]),
+                                   assignment=float(item[8]),
+                                   content=item[9]
+                                   )
+            comment.result = (comment.assignment +
+                                  comment.attendance +
+                                  comment.pre +
+                                  comment.grade +
+                                  comment.hard +
+                                  comment.reward +
+                                  comment.recommend) / 7
+            comment.save()
+    d=models.comment.objects.all()
+    for i in d:
+        n=7
+        # if i.content=='0':
+        #     i.content=''
+        #     i.save()
+        if i.attendance==0:
+            n-=1
+        if i.pre==0:
+            n-=1
+        if i.grade==0:
+            n-=1
+        if i.hard==0:
+            n-=1
+        if i.reward==0:
+            n-=1
+        if i.recommend==0:
+            n-=1
+        if i.assignment==0:
+            n-=1
+        i.result=(i.attendance+i.pre+i.grade+i.hard+i.reward+i.recommend+i.assignment)/n
+        i.save()
+        print(num)
+        num += 1
+    return HttpResponse('Success')
+
+def cal_grade(request):
+    d=models.prof_with_course.objects.all()
+    for course in d:
+        comments=models.comment.objects.filter(course=course)
+        grade = 0.0
+        if len(comments)!=0:
+            for comment in comments:
+                grade+=comment.result
+            grade=grade/len(comments)
+            course.grade=grade
+        course.comments=len(comments)
+        course.save()
+        print(grade)
+    return HttpResponse('Success')
