@@ -20,4 +20,5 @@ from django.urls import path
 
 urlpatterns = [
     path('course_info/',api_views.course_info),
+    path('comment_info/',api_views.comment_info),
 ]

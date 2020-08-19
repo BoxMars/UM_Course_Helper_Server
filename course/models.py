@@ -57,6 +57,21 @@ class prof_with_course(models.Model):
     course=models.ForeignKey(course_noporf,on_delete=models.CASCADE)
     grade=models.FloatField(default=0)
     comments=models.IntegerField(default=0)
+    attendance=models.FloatField(default=0.0)
+    grade = models.FloatField(default=0.0)
+    hard = models.FloatField(default=0.0)
+    reward = models.FloatField(default=0.0)
+
+    def info(self):
+        content={
+            "name": self.prof.name,
+            "grade": self.grade,
+            "attendance": self.attendance,
+            "hard": self.hard,
+            "reward": self.reward,
+            "num":self.comments,
+        }
+        return content
 
 class comment(models.Model):
     uuid=models.UUIDField(primary_key=True, default=uuid.uuid4, unique=True)
@@ -71,3 +86,16 @@ class comment(models.Model):
     assignment=models.FloatField()
     result=models.FloatField(default=0)
     pub_time=models.DateTimeField(default=timezone.now)
+
+    def info(self):
+        content={
+            "content": self.content,
+            "grade": self.grade,
+            "attendance": self.attendance,
+            "hard": self.hard,
+            "reward": self.reward,
+            "pre": self.pre,
+            "recommand": self.recommend,
+            "assignment": self.assignment,
+        }
+        return content

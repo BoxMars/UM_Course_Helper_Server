@@ -133,16 +133,34 @@ def importcomment(request):
     return HttpResponse('Success')
 
 def cal_grade(request):
+    n=0
     d=models.prof_with_course.objects.all()
     for course in d:
-        comments=models.comment.objects.filter(course=course)
+        comments = models.comment.objects.filter(course=course)
         grade = 0.0
-        if len(comments)!=0:
+        if len(comments) != 0:
             for comment in comments:
-                grade+=comment.result
-            grade=grade/len(comments)
-            course.grade=grade
-        course.comments=len(comments)
+                grade += comment.hard
+            grade = grade / len(comments)
+            course.hard = grade
+        course.hard_num = len(comments)
+
+        grade = 0.0
+        if len(comments) != 0:
+            for comment in comments:
+                grade += comment.grade
+            grade = grade / len(comments)
+            course.grade = grade
+        course.grade_num = len(comments)
+
+        grade = 0.0
+        if len(comments) != 0:
+            for comment in comments:
+                grade += comment.reward
+            grade = grade / len(comments)
+            course.reward = grade
+        course.reward_num = len(comments)
         course.save()
-        print(grade)
+        print(grade,n)
+        n+=1
     return HttpResponse('Success')
