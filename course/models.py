@@ -27,10 +27,29 @@ class course_noporf(models.Model):
     Course_Duration=models.CharField(max_length=100,default='')
     Medium_of_Instruction=models.CharField(max_length=100,default='')
 
+    def info(self):
+        content={
+            "New_code":self.New_code,
+            "Offering_Unit":self.Offering_Unit,
+            "Old_code":self.Old_code,
+            "courseTitleEng":self.courseTitleEng,
+            "courseTitleChi":self.courseTitleChi,
+            "Credits":float(self.Credits),
+            "Medium_of_Instruction":self.Medium_of_Instruction,
+            "Offering_Department":self.Offering_Department,
+        }
+        return content
+
 
 class prof_info(models.Model):
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, unique=True)
     name=models.CharField(max_length=100)
+
+    def info(self):
+        content={
+            "name":self.name
+        }
+        return content
 
 class prof_with_course(models.Model):
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, unique=True)

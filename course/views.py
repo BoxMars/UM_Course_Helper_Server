@@ -12,6 +12,8 @@ from server import settings
     "Credits": "6.0",
     "Course_Duration": "Semester"
 '''
+def index(request):
+    return HttpResponse('Test')
 def importclass(request):
     n=1
     d=models.course.objects.all()
