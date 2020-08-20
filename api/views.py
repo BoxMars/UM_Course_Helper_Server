@@ -1,10 +1,11 @@
+from django.http import JsonResponse
 from django.shortcuts import render,HttpResponse
 from course import models as course_modle
 import json
 
 def course_info(request):
     '''
-        :request
+        :param request:
             /course_info?New_code=xxx
         :return
         {
@@ -41,7 +42,7 @@ def course_info(request):
 
 def comment_info(request):
     '''
-        :request
+        :param request:
             /comment_info/?New_code=xxx&prof_name=xxx
         :return:
         {
@@ -94,3 +95,18 @@ def comment_info(request):
     for comment in comments:
         context["comments"].append(comment.info())
     return HttpResponse(json.dumps(context), content_type="application/json")
+
+def submit_comment(request):
+    '''
+
+    :param request:
+
+
+        {
+
+        }
+    :return:
+    '''
+
+    print(request.POST["text"])
+    return JsonResponse({"status": 200, "msg": "OK"})

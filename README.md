@@ -78,7 +78,7 @@
     ```
 
 - comment
-    -单次评价
+    - 单次评价
     ```python
         class comment(models.Model):
             course=models.ForeignKey(prof_with_course,on_delete=models.CASCADE) #指向prof_with_course中的课程实例
