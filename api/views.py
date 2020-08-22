@@ -1,5 +1,5 @@
 from django.http import JsonResponse
-from django.shortcuts import render,HttpResponse
+from django.shortcuts import HttpResponse
 from course import models as course_modle
 import json
 
@@ -72,7 +72,7 @@ def comment_info(request):
                     "hard":" ",
                     "reward":" ",
                     "pre":" ",
-                    "recommand":" ",
+                    "recommend":" ",
                     "assignment":" ",
                 }
                 {},{},{}...
@@ -101,12 +101,34 @@ def submit_comment(request):
 
     :param request:
 
-
-        {
-
+        data:{
+            "New_code":xxx,
+            "prof_name":xxx,
+            "content":zzzzzzzz,
+            "grade":,
+            "attendance":,
+            "hard":,
+            "reward":,
+            "pre":,
+            "recommend":,
+            "assignment":,
         }
     :return:
     '''
-
-    print(request.POST["text"])
+    New_code=request.POST["New_code"]
+    prof_name=request.POST["prof_name"]
+    content=request.POST["content"]
+    grade=float(request.POST["grade"])
+    attendance=float(request.POST["attendance"])
+    hard=float(request.POST["hard"])
+    reward=float(request.POST["reward"])
+    pre=float(request.POST["pre"])
+    recommend=float(request.POST["recommend"])
+    assignment=float(request.POST["assignment"])
+    course_noprof=course_modle.course_noporf.objects.filter(New_code=New_code).first()
+    prof=course_modle.prof_info.objects.filter(name=prof_name).first()
+    course=course_modle.prof_with_course.objects.filter(course=course_noprof,prof=prof)
+    if len(course)>0:
+        course=course.first()
+    # print(New_code,prof_name,content,grade,assignment,attendance,hard,reward,pre,recommend)
     return JsonResponse({"status": 200, "msg": "OK"})

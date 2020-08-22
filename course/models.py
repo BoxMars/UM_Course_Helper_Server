@@ -96,7 +96,7 @@ class comment(models.Model):
             "hard": self.hard,
             "reward": self.reward,
             "pre": self.pre,
-            "recommand": self.recommend,
+            "recommend": self.recommend,
             "assignment": self.assignment,
         }
         return content
