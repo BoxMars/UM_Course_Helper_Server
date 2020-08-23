@@ -155,5 +155,8 @@ def submit_comment(request):
         course.grade=(course.grade*(course.comments-1)+comment.grade)/course.comments
         course.hard=(course.hard*(course.comments-1)+comment.hard)/course.comments
         course.reward=(course.reward*(course.comments-1)+comment.reward)/course.comments
+        course.result = (course.result * (course.comments - 1) + comment.result) / course.comments
+        course.save()
+        return JsonResponse({"code": "Success", "msg": ""})
     else:
         return JsonResponse({"code":"Error","msg":"Course doesn't exist"})

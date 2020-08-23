@@ -19,7 +19,7 @@ from django.urls import path
 
 
 urlpatterns = [
-    path('temp/',course_views.cal_grade),
+    path('temp/',course_views.test_course),
     path('course_info/',api_views.course_info),
     path('comment_info/',api_views.comment_info),
     path('submit_comment/',api_views.submit_comment),

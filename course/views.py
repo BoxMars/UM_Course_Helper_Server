@@ -13,7 +13,24 @@ from server import settings
     "Course_Duration": "Semester"
 '''
 def test_course(request):
-    
+    course=models.course_noporf(
+        New_code="TEST",
+        Offering_Department="TEST",
+        Offering_Unit="TEST",
+        Old_code="TEST",
+        courseTitleChi="T测试",
+        courseTitleEng="TEST",
+        Credits="3.0",
+        Course_Duration="TEST",
+        Medium_of_Instruction="TEST"
+    )
+    course.save()
+    prof=models.prof_info(name="TEST")
+    prof.save()
+    course_prof=models.prof_with_course(course=course,
+                                        prof=prof,)
+    course_prof.save()
+    return HttpResponse("Success")
 def index(request):
     return HttpResponse('Test')
 def importclass(request):
