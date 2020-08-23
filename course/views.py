@@ -12,6 +12,8 @@ from server import settings
     "Credits": "6.0",
     "Course_Duration": "Semester"
 '''
+def test_course(request):
+    
 def index(request):
     return HttpResponse('Test')
 def importclass(request):
@@ -143,7 +145,13 @@ def cal_grade(request):
                 grade += comment.hard
             grade = grade / len(comments)
             course.hard = grade
-        course.hard_num = len(comments)
+
+        grade = 0.0
+        if len(comments) != 0:
+            for comment in comments:
+                grade += comment.result
+            grade = grade / len(comments)
+            course.result = grade
 
         grade = 0.0
         if len(comments) != 0:
@@ -151,7 +159,6 @@ def cal_grade(request):
                 grade += comment.grade
             grade = grade / len(comments)
             course.grade = grade
-        course.grade_num = len(comments)
 
         grade = 0.0
         if len(comments) != 0:
@@ -159,7 +166,6 @@ def cal_grade(request):
                 grade += comment.reward
             grade = grade / len(comments)
             course.reward = grade
-        course.reward_num = len(comments)
         course.save()
         print(grade,n)
         n+=1

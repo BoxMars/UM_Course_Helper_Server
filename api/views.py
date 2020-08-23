@@ -48,7 +48,7 @@ def comment_info(request):
         {
             "course_info":{
                 "New_code":" ",
-                "Old_code":" " ,// if old code doesn't exit, return ""
+                "Old_code":" " ,// if old code doesn't exist, return ""
                 "Offering_Unit":" ",
                 "Offering_Department":" ",
                 "courseTitleEng":" ",
@@ -114,6 +114,10 @@ def submit_comment(request):
             "assignment":,
         }
     :return:
+        {
+            "code":"Success"/"Error",
+            "msg":"",
+        }
     '''
     New_code=request.POST["New_code"]
     prof_name=request.POST["prof_name"]
@@ -125,10 +129,31 @@ def submit_comment(request):
     pre=float(request.POST["pre"])
     recommend=float(request.POST["recommend"])
     assignment=float(request.POST["assignment"])
+
     course_noprof=course_modle.course_noporf.objects.filter(New_code=New_code).first()
     prof=course_modle.prof_info.objects.filter(name=prof_name).first()
     course=course_modle.prof_with_course.objects.filter(course=course_noprof,prof=prof)
+
     if len(course)>0:
         course=course.first()
-    # print(New_code,prof_name,content,grade,assignment,attendance,hard,reward,pre,recommend)
-    return JsonResponse({"status": 200, "msg": "OK"})
+        comment=course_modle.comment(
+            course=course,
+            content=content,
+            grade=grade,
+            attendance=attendance,
+            hard=hard,
+            reward=reward,
+            pre=pre,
+            recommend=recommend,
+            assignment=assignment
+        )
+        comment.save()
+        comment.result=comment.cal_result()
+        comment.save()
+        course.comments+=1
+        course.attendance=(course.attendance*(course.comments-1)+comment.attendance)/course.comments
+        course.grade=(course.grade*(course.comments-1)+comment.grade)/course.comments
+        course.hard=(course.hard*(course.comments-1)+comment.hard)/course.comments
+        course.reward=(course.reward*(course.comments-1)+comment.reward)/course.comments
+    else:
+        return JsonResponse({"code":"Error","msg":"Course doesn't exist"})

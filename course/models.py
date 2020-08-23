@@ -100,3 +100,5 @@ class comment(models.Model):
             "assignment": self.assignment,
         }
         return content
+    def cal_result(self):
+        return (self.assignment+self.attendance+self.pre+self.grade+self.hard+self.reward+self.recommend)/7
