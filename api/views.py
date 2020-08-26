@@ -36,8 +36,8 @@ def course_info(request):
     context['course_info']=course.info()
     prof_course_list=course_modle.prof_with_course.objects.filter(course=course)
     for prof_course in prof_course_list:
-        prof=prof_course.prof
-        context['prof_info'].append(prof.info())
+        # prof=prof_course.prof
+        context['prof_info'].append(prof_course.info())
     return HttpResponse(json.dumps(context),content_type="application/json")
 
 def comment_info(request):
@@ -93,7 +93,8 @@ def comment_info(request):
     context["prof_info"]=course_prof.info()
     comments=course_modle.comment.objects.filter(course=course_prof)
     for comment in comments:
-        context["comments"].append(comment.info())
+        if comment.info()["content"] != "" :
+            context["comments"].append(comment.info())
     return HttpResponse(json.dumps(context), content_type="application/json")
 
 def submit_comment(request):
