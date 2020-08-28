@@ -72,7 +72,8 @@
             }
             // 以上部分于 /course_info?New_code=xxx 相同
 
-            // 具体评论由于只用于展示 评级内容 ， 故如若评价(comments)中 评论(content) 为 空：""，本条评价将不会包含在数组返回
+            // 具体评论
+            // 由于只用于展示 评论(返回信息中的content)内容 ， 故如若评价(comments)中 评论(content) 为 空：""，本条评价将不会包含在数组返回
             "comments":[
                 {
                     "content":" ", //具体评价内容
