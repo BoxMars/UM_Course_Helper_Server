@@ -6,103 +6,109 @@
 
 本项目是使用Django开发的
 
-## 数据库模型
+## API
+```
+    url="http://test.com"
+```
 
-[models.py](/course/models.py)
-
-- course_noporf
-    - 课程相关的数据
-    ```python
-    class course_noporf(models.Model):
-        Offering_Unit=models.CharField(max_length=100,default='') #学院
-        Offering_Department=models.CharField(max_length=100,default='') #院系
-        New_code=models.CharField(max_length=100,default='') #新的课程编号，在对数据库检索时主要使用这一数据
-        Old_code=models.CharField(max_length=100,default='') # 旧的课程编号，新添加的课可能没用
-        courseTitleEng=models.CharField(max_length=100,default='') #课程的英文名
-        courseTitleChi=models.CharField(max_length=100,default='') #课程的中文名
-        Credits=models.CharField(max_length=100,default='') #对应学分
-        Course_Duration=models.CharField(max_length=100,default='') #课时？（大概）
-        Medium_of_Instruction=models.CharField(max_length=100,default='') #授课语言
-        
-        def info(self): #调用本函数将会返回课程相关信息（无对应教师）
-            content={
-                "New_code":self.New_code,
-                "Offering_Unit":self.Offering_Unit,
-                "Old_code":self.Old_code,
-                "courseTitleEng":self.courseTitleEng,
-                "courseTitleChi":self.courseTitleChi,
-                "Credits":float(self.Credits),
-                "Medium_of_Instruction":self.Medium_of_Instruction,
-                "Offering_Department":self.Offering_Department,
+### 课程信息
+#### request GET
+> url/course_info?New_code=xxx 
+查询时请将字母大写
+#### 返回内容
+```
+    {
+            "course_info":{
+                "New_code":" ", // 课程编号
+                "Old_code":" " ,// if old code doesn't exit, return "" 旧的课程编号，已弃用
+                "Offering_Unit":" ", // 课程提供部门
+                "Offering_Department":" ", //课程提供专业
+                "courseTitleEng":" ",   //课程的中文名
+                "courseTitleChi":" ", //课程的英文名
+                "Credits":" ",  //对应学分
+                "Medium_of_Instruction":" ", //
+            }, 
+            "prof_info":[
+                {   
+                    //此处源码部分注释未更新
+                    "name": "", //教授
+                    "result":"", //课程总评 
+                    "grade": "", //给分
+                    "attendance": "", //签到
+                    "hard": "", //难易
+                    "reward": "", //收获
+                    "num":"",  //评价总数
+                }，
+                {},{},{}...
+            ]
+        }
+```
+### 评价信息
+#### request GET
+> url/comment_info/?New_code=xxx&prof_name=xxx
+查询时请将字母大写(/course_info?New_code=xxx 返回的均为大写，可直接引用)
+#### 返回内容
+```
+    {
+            "course_info":{
+                "New_code":" ",
+                "Old_code":" " ,// if old code doesn't exist, return ""
+                "Offering_Unit":" ",
+                "Offering_Department":" ",
+                "courseTitleEng":" ",
+                "courseTitleChi":" ",
+                "Credits":" ",
+                "Medium_of_Instruction":" ",
             }
-            return content
-    ```
-
-- prof_info
-    - 教师相关信息
-    ```python
-    class prof_info(models.Model):
-        name=models.CharField(max_length=100)
-
-        def info(self): #调用本函数将会返回教师相关信息
-            content={
-                "name":self.name
+            "prof_info":{
+                "name":" ",
+                "grade":" ",
+                "attendance":" ",
+                "hard":" ",
+                "reward":" ",
+                "num":, 
             }
-            return content
-    ```
-   
-- prof_with_course
-    - 课程对应教师
-    ```python
-        class prof_with_course(models.Model):
-            prof=models.ForeignKey(prof_info,on_delete=models.CASCADE) #指向prof_info中的教师实例
-            course=models.ForeignKey(course_noporf,on_delete=models.CASCADE) #指向course_noporf中的课程实例
-            result=models.FloatField(default=0) # 本课程的综合评价
-            comments=models.IntegerField(default=0) # 学生提交的评论总数
-            attendance=models.FloatField(default=0.0) # 本课程的签到情况
-            grade = models.FloatField(default=0.0) # 本课程的给分情况
-            hard = models.FloatField(default=0.0) # 本课程的难易情况
-            reward = models.FloatField(default=0.0) # 本课程的收获
+            // 以上部分于 /course_info?New_code=xxx 相同
 
-            def info(self): #调用本函数将会返回课程相关信息（有对应教师）
-                content={
-                "name": self.prof.name,
-                "result":self.result,
-                "grade": self.grade,
-                "attendance": self.attendance,
-                "hard": self.hard,
-                "reward": self.reward,
-                "num":self.comments,
+            // 具体评论由于只用于展示 评级内容 ， 故如若评价(comments)中 评论(content) 为 空：""，本条评价将不会包含在数组返回
+            "comments":[
+                {
+                    "content":" ", //具体评价内容
+                    //以下与 "course_info" 相同
+                    "grade":" ",
+                    "attendance":" ",
+                    "hard":" ",
+                    "reward":" ",
+                    "pre":" ",
+                    "recommend":" ",
+                    "assignment":" ",
                 }
-                return content
-    ```
+                {},{},{}...
+            ]
+        }
+```
+### 提交评论
+#### request POST
+> url/submit_comment/
+```
+data:{
+            "New_code":xxx, 
+            "prof_name":xxx,
+            "content":zzzzzzzz,
+            "grade":,
+            "attendance":,
+            "hard":,
+            "reward":,
+            "pre":,
+            "recommend":,
+            "assignment":,
+        }
+```
 
-- comment
-    - 单次评价
-    ```python
-        class comment(models.Model):
-            course=models.ForeignKey(prof_with_course,on_delete=models.CASCADE) #指向prof_with_course中的课程实例
-            content=models.TextField() # 评价内容
-            attendance=models.FloatField()# 本课程的签到情况
-            pre=models.FloatField()#pre情况
-            grade=models.FloatField()# 本课程的给分情况
-            hard=models.FloatField()# 本课程的难易情况
-            reward=models.FloatField()# 本课程的收获
-            recommend=models.FloatField()# 是否推荐
-            assignment=models.FloatField()# 作业情况
-            result=models.FloatField(default=0) # 本次评价的综合得分
-            pub_time=models.DateTimeField(default=timezone.now)# 提交时间
-
-            def info(self): #调用本函数将会返回本次评价的相关信息
-                content={
-                    "content": self.content,
-                    "grade": self.grade,
-                    "attendance": self.attendance,
-                    "hard": self.hard,
-                    "reward": self.reward,
-                    "pre": self.pre,
-                    "recommand": self.recommend,
-                    "assignment": self.assignment,
-                }
-                return content
-    ```
+#### 返回内容
+```
+{
+            "code":"Success"/"Error",
+            "msg":"",
+}
+```
