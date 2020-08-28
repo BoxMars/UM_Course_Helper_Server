@@ -161,3 +161,40 @@ def submit_comment(request):
         return JsonResponse({"code": "Success", "msg": ""})
     else:
         return JsonResponse({"code":"Error","msg":"Course doesn't exist"})
+
+def prof_info(request):
+    '''
+    :param request:
+        /prof_info?name=xxx
+    :return:
+        {
+            "prof_info":{
+                "name":"",
+            }
+            "course":[
+                {
+                    "course_info":{
+                        "New_code":" ",
+                        "Old_code":" " ,// if old code doesn't exist, return ""
+                        "Offering_Unit":" ",
+                        "Offering_Department":" ",
+                        "courseTitleEng":" ",
+                        "courseTitleChi":" ",
+                        "Credits":" ",
+                        "Medium_of_Instruction":" ",
+                        },
+                    "comments":{
+                        "content":" ",
+                        "grade":" ",
+                        "attendance":" ",
+                        "hard":" ",
+                        "reward":" ",
+                        "pre":" ",
+                        "recommend":" ",
+                        "assignment":" ",
+                    },
+                },
+                {},{},{}...
+            ],
+        }
+    '''
