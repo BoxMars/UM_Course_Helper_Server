@@ -115,3 +115,47 @@ data:{
             "msg":"",
 }
 ```
+
+### 教授信息(未实装)
+#### request GET
+> url/prof_info?name=xxx
+
+字母全大写
+
+#### 返回内容
+
+```
+    {
+        "prof_info":{
+            "name":"", //教授
+        }
+        // 教授所教授的全部课程
+        "course":[
+            {
+                //课程信息
+                "course_info":{
+                    "New_code":" ",
+                    "Old_code":" " ,// if old code doesn't exist, return ""
+                    "Offering_Unit":" ",
+                    "Offering_Department":" ",
+                    "courseTitleEng":" ",
+                    "courseTitleChi":" ",
+                    "Credits":" ",
+                    "Medium_of_Instruction":" ",
+                    },
+                
+                // 本课程中教授信息
+                // 懒得改代码了，与上文信息重复 😁
+                "prof_info":{
+                    "name":" ",
+                    "grade":" ", //给分
+                    "attendance":" ", // 签到
+                    "hard":" ", //难易
+                    "reward":" ", //收获
+                    "num":,  //评论数量
+                }
+            },
+            {},{},{}...
+        ],
+    }
+```
