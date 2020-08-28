@@ -23,7 +23,7 @@ class course_noporf(models.Model):
     Old_code = models.CharField(max_length=100, default='')  # 旧的课程编号，新添加的课可能没用
     courseTitleEng = models.CharField(max_length=100, default='')  # 课程的英文名
     courseTitleChi = models.CharField(max_length=100, default='')  # 课程的中文名
-    Credits = models.CharField(max_length=100, default='')  # 对应学分
+    Credits = models.CharField(max_length=100, default='0.0')  # 对应学分
     Course_Duration = models.CharField(max_length=100, default='')  # 课时？（大概）
     Medium_of_Instruction = models.CharField(max_length=100, default='')  # 授课语言
 
