@@ -14,6 +14,7 @@
 ### 课程信息
 #### request GET
 > url/course_info?New_code=xxx 
+
 查询时请将字母大写
 #### 返回内容
 ```
@@ -46,6 +47,7 @@
 ### 评价信息
 #### request GET
 > url/comment_info/?New_code=xxx&prof_name=xxx
+
 查询时请将字母大写(/course_info?New_code=xxx 返回的均为大写，可直接引用)
 #### 返回内容
 ```
