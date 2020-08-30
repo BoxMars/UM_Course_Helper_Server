@@ -44,6 +44,14 @@
             ]
         }
 ```
+#### 編號錯誤時的返回内容
+```json
+    {
+        "course_info":"Error Code",
+        "msg":"Course doesn't exist",
+        "prof_info":[]
+    }
+```
 ### 评价信息
 #### request GET
 > url/comment_info/?New_code=xxx&prof_name=xxx
@@ -54,7 +62,7 @@
     {
             "course_info":{
                 "New_code":" ",
-                "Old_code":" " ,// if old code doesn't exist, return ""
+                "Old_code":" " ,# if old code doesn't exist, return ""
                 "Offering_Unit":" ",
                 "Offering_Department":" ",
                 "courseTitleEng":" ",
@@ -90,6 +98,21 @@
             ]
         }
 ```
+
+#### 編號錯誤時的返回内容
+
+```json
+{
+    "content":"No comment yet",
+    "grade":" 0",
+    "attendance":"0 ",
+    "hard":" 0",
+    "reward":"0 ",
+    "pre":" 0",
+    "recommend":"0 ",
+    "assignment":" 0"
+}
+```
 ### 提交评论
 #### request POST
 > url/submit_comment/
@@ -111,12 +134,18 @@ data:{
 #### 返回内容
 ```
 {
-            "code":"Success"/"Error",
-            "msg":"",
+    "code": "1", 
+    "msg": "Your comment has been submitted successfully"
 }
 ```
-
-### 教授信息(未实装)
+or
+```json
+{
+  "code":"0",
+  "msg":"Some unknown errors have occurred"
+}
+```
+### 教授信息
 #### request GET
 > url/prof_info?name=xxx
 
@@ -158,4 +187,12 @@ data:{
             {},{},{}...
         ],
     }
+```
+#### 編號錯誤時的返回内容
+```json
+{
+            "prof_info": {
+                "name": "Error NAME",
+            },
+            "course":[]
 ```
