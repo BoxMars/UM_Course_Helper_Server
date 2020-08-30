@@ -287,3 +287,28 @@ def prof_info(request):
             },
             "course":[],
         })
+
+
+def fuzzy_search(request):
+    '''
+
+    :param request:
+        /fuzzy_search?text=xxx&type=course
+        /fuzzy_search?text=xxx&type=prof
+    :return:
+    '''
+    context={
+        "course_info":[],
+        "prof_info":[]
+    }
+    type=request.GET.get("type")
+    text=request.GET.get("text")
+    if type=="course":
+        courses=course_modle.course_noporf.objects.filter(New_code__istartswith=text)
+        for course in courses:
+            context["course_info"].append(course.info())
+    elif type=="prof":
+        profs=course_modle.prof_info.objects.filter(name__istartswith=text)
+        for prof in profs:
+            context["prof_info"].append(prof.info())
+    return HttpResponse(json.dumps(context), content_type="application/json")
