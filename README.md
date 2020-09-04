@@ -8,4 +8,4 @@
 
 ## [API](./doc/api.md)
 
-## [Database](./doc/dtabase.md)
+## [Database](./doc/database.md)
