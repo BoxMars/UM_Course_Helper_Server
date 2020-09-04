@@ -19,11 +19,12 @@ from django.urls import path
 
 
 urlpatterns = [
-    path('temp/',course_views.test_course),
+    # path('temp/',course_views.stat),
     path('course_info/',api_views.course_info),
     path('comment_info/',api_views.comment_info),
     path('submit_comment/',api_views.submit_comment),
     path('submit_comment_get/',api_views.submit_comment_get),
     path('prof_info/',api_views.prof_info),
     path('fuzzy_search/',api_views.fuzzy_search),
+    path('get_stat/',api_views.get_stat)
 ]

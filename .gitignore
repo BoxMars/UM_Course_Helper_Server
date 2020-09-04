@@ -8,3 +8,4 @@
 /server/settings.py
 /static
 db.sqlite3
+/__pycache__

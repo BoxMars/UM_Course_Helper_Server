@@ -87,6 +87,8 @@ class comment(models.Model):
     assignment=models.FloatField()# 作业情况
     result=models.FloatField(default=0) # 本次评价的综合得分
     pub_time=models.DateTimeField(default=timezone.now)# 提交时间
+    upvote=models.IntegerField(default=0)
+    downvote=models.IntegerField(default=0)
 
     def info(self): #调用本函数将会返回本次评价的相关信息
         content={
@@ -98,7 +100,29 @@ class comment(models.Model):
             "pre": self.pre,
             "recommend": self.recommend,
             "assignment": self.assignment,
+            "upvote":self.upvote,
+            "downvote":self.downvote
         }
         return content
     def cal_result(self):
         return (self.assignment+self.attendance+self.pre+self.grade+self.hard+self.reward+self.recommend)/7
+
+
+class statistics(models.Model):
+    name=models.CharField(max_length=200)
+    course_num=models.IntegerField()
+    comment_num=models.IntegerField()
+
+    def info(self):
+        content={
+            "name":self.name,
+            "course":self.course_num,
+            "comment":self.comment_num,
+        }
+
+    def info2(self):
+        content = {
+            "course": self.course_num,
+            "comment": self.comment_num,
+            }
+        return content
