@@ -409,3 +409,72 @@ def get_stat(request):
     context["faculty_detail"]["FSS"]=course_modle.statistics.objects.filter(name="FSS").first().info2()
     context["faculty_detail"]["FST"]=course_modle.statistics.objects.filter(name="FST").first().info2()
     return HttpResponse(json.dumps(context), content_type="application/json")
+
+def all_comment_info(request):
+    '''
+        :param request:
+            /all_comment_info/?New_code=xxx&prof_name=xxx
+        :return:
+        {
+            "course_info":{
+                "New_code":" ",
+                "Old_code":" " ,// if old code doesn't exist, return ""
+                "Offering_Unit":" ",
+                "Offering_Department":" ",
+                "courseTitleEng":" ",
+                "courseTitleChi":" ",
+                "Credits":" ",
+                "Medium_of_Instruction":" ",
+            }
+            "prof_info":{
+                "name":" ",
+                "grade":" ",
+                "attendance":" ",
+                "hard":" ",
+                "reward":" ",
+                "num":,
+            }
+            "comments":[
+                {
+                    "content":" ",
+                    "grade":" ",
+                    "attendance":" ",
+                    "hard":" ",
+                    "reward":" ",
+                    "pre":" ",
+                    "recommend":" ",
+                    "assignment":" ",
+                }
+                {},{},{}...
+            ]
+        }
+    '''
+    context = {
+        "course_info": {},
+        "prof_info": {},
+        "comments": [],
+    }
+    New_code=request.GET.get("New_code")
+    course=course_modle.course_noporf.objects.filter(New_code=New_code).first()
+    prof_name=request.GET.get("prof_name")
+    prof=course_modle.prof_info.objects.filter(name=prof_name).first()
+    course_prof=course_modle.prof_with_course.objects.filter(prof=prof,course=course).first()
+    context["course_info"]=course.info()
+    context["prof_info"]=course_prof.info()
+    comments=course_modle.comment.objects.filter(course=course_prof)
+    if len(comments) !=0:
+        for comment in comments:
+            context["comments"].append(comment.info())
+        context["comments"].reverse()
+        return HttpResponse(json.dumps(context), content_type="application/json")
+    else:
+        context["comments"].append({
+                    "content":"No comment yet",
+                    "grade":" 0",
+                    "attendance":"0 ",
+                    "hard":" 0",
+                    "reward":"0 ",
+                    "pre":" 0",
+                    "recommend":"0 ",
+                    "assignment":" 0",
+                })

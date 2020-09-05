@@ -22,6 +22,7 @@ urlpatterns = [
     # path('temp/',course_views.stat),
     path('course_info/',api_views.course_info),
     path('comment_info/',api_views.comment_info),
+    path('all_comment_info/',api_views.all_comment_info),
     path('submit_comment/',api_views.submit_comment),
     path('submit_comment_get/',api_views.submit_comment_get),
     path('prof_info/',api_views.prof_info),
