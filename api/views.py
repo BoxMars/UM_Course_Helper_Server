@@ -289,13 +289,13 @@ def prof_info(request):
             course["prof_info"]=i.info()
             context["course"].append(course)
         return HttpResponse(json.dumps(context), content_type="application/json")
-    else:
-        return JsonResponse({
-            "prof_info": {
-                "name": "Error NAME",
-            },
-            "course":[],
-        })
+    # else:
+    #     return JsonResponse({
+    #         "prof_info": {
+    #             "name": "Error NAME",
+    #         },
+    #         "course":[],
+    #     })
 
 
 def fuzzy_search(request):
@@ -397,17 +397,21 @@ def get_stat(request):
             },
         }
     }
+    context["faculty_detail"]["FAH"] = course_modle.statistics.objects.filter(name="FAH").first().info2()
+    context["faculty_detail"]["FBA"] = course_modle.statistics.objects.filter(name="FBA").first().info2()
+    context["faculty_detail"]["FED"] = course_modle.statistics.objects.filter(name="FED").first().info2()
+    context["faculty_detail"]["FHS"] = course_modle.statistics.objects.filter(name="FHS").first().info2()
+    context["faculty_detail"]["FLL"] = course_modle.statistics.objects.filter(name="FLL").first().info2()
+    context["faculty_detail"]["FSS"] = course_modle.statistics.objects.filter(name="FSS").first().info2()
+    context["faculty_detail"]["FST"] = course_modle.statistics.objects.filter(name="FST").first().info2()
 
-    context["course_num"]=len(course_modle.course_noporf.objects.all())
-    context["prof_num"]=len(course_modle.prof_info.objects.all())
-    context["comment_num"]=len(course_modle.comment.objects.all())
-    context["faculty_detail"]["FAH"]=course_modle.statistics.objects.filter(name="FAH").first().info2()
-    context["faculty_detail"]["FBA"]=course_modle.statistics.objects.filter(name="FBA").first().info2()
-    context["faculty_detail"]["FED"]=course_modle.statistics.objects.filter(name="FED").first().info2()
-    context["faculty_detail"]["FHS"]=course_modle.statistics.objects.filter(name="FHS").first().info2()
-    context["faculty_detail"]["FLL"]=course_modle.statistics.objects.filter(name="FLL").first().info2()
-    context["faculty_detail"]["FSS"]=course_modle.statistics.objects.filter(name="FSS").first().info2()
-    context["faculty_detail"]["FST"]=course_modle.statistics.objects.filter(name="FST").first().info2()
+    # context["course_num"]=len(course_modle.course_noporf.objects.all())
+    context["course_num"]=1643
+    # context["prof_num"]=len(course_modle.prof_info.objects.all())
+    context["prof_num"]=907
+    # context["comment_num"]=len(course_modle.comment.objects.all())
+
+
     return HttpResponse(json.dumps(context), content_type="application/json")
 
 def all_comment_info(request):
