@@ -78,6 +78,7 @@ def comment_info(request):
                     "pre":" ",
                     "recommend":" ",
                     "assignment":" ",
+                    "pub_time": " ",
                 }
                 {},{},{}...
             ]
@@ -112,6 +113,7 @@ def comment_info(request):
                     "pre":" 0",
                     "recommend":"0 ",
                     "assignment":" 0",
+                    "pub_time": "None",
                 })
 
 def submit_comment(request):

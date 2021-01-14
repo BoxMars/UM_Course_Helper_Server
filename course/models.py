@@ -1,6 +1,9 @@
 from django.db import models
 from django.utils import timezone
 import uuid
+import pytz
+from django.utils.datetime_safe import datetime
+
 
 class course(models.Model):
     uuid=models.UUIDField(primary_key=True, default=uuid.uuid4,unique=True)
@@ -91,6 +94,12 @@ class comment(models.Model):
     downvote=models.IntegerField(default=0)
 
     def info(self): #调用本函数将会返回本次评价的相关信息
+        utc = pytz.UTC
+        time=self.pub_time
+        if time<utc.localize(datetime(year=2020,month=8,day=30)):
+            time="Before 1st Sem of 20/21"
+        else:
+            time=str(time.year)+"-"+str(time.month)+"-"+str(time.day)
         content={
             "content": self.content,
             "grade": self.grade,
@@ -101,7 +110,8 @@ class comment(models.Model):
             "recommend": self.recommend,
             "assignment": self.assignment,
             "upvote":self.upvote,
-            "downvote":self.downvote
+            "downvote":self.downvote,
+            "pub_time": time
         }
         return content
     def cal_result(self):
