@@ -32,8 +32,6 @@ def import_course(request):
                 courseTitleEng=item[3],
                 Medium_of_Instruction=item[4]
             )
-            n+=1
-            print(n)
             new_course.save()
     return HttpResponse("success")
 
@@ -45,13 +43,10 @@ def import_prof(request):
     reader = csv.reader(csvFile)
     for item in reader:
         prof=models.prof_info.objects.filter(name=item[5])
-
         if len(prof)==0:
             new_prof=models.prof_info(
                 name=item[5]
             )
-            n+=1
-            print(n)
             new_prof.save()
     return HttpResponse("success")
 
@@ -80,8 +75,6 @@ def import_prof_course(request):
                 ).first(),
             )
             course.save()
-            n += 1
-            print(n)
     return HttpResponse("success")
 
 

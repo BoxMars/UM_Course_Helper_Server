@@ -482,3 +482,21 @@ def all_comment_info(request):
                     "recommend":"0 ",
                     "assignment":" 0",
                 })
+
+def get_vote(request):
+    '''
+    :param request:
+        /get_vote?type=up/down&id=xxx
+    :return:
+    '''
+
+    id=request.GET.get('id')
+    type=request.GET.get('type')
+    comment=course_modle.comment.objects.filter(id=id)
+
+    if type=='up':
+        comment.upvote+=1
+    elif type=='down':
+        comment.downvote+=1
+
+    comment.save()

@@ -27,5 +27,8 @@ urlpatterns = [
     path('submit_comment_get/',api_views.submit_comment_get),
     path('prof_info/',api_views.prof_info),
     path('fuzzy_search/',api_views.fuzzy_search),
-    path('get_stat/',api_views.get_stat)
+    path('get_stat/',api_views.get_stat),
+    path('prof/',course_views.import_prof),
+    path('course/',course_views.import_course),
+    path('prof_couse/',course_views.import_prof_course),
 ]
