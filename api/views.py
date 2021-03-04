@@ -2,6 +2,12 @@ from django.http import JsonResponse
 from django.shortcuts import HttpResponse
 from course import models as course_modle
 import json
+import requests
+headers = {
+    'X-Auth-Email': 'UMacauHelper@gmail.com',
+    'X-Auth-Key': 'a645424a102b390eacc2909d3a03b8daf7804',
+    'Content-Type': 'application/json',
+}
 
 def course_info(request):
     '''
@@ -149,7 +155,10 @@ def submit_comment(request):
     pre=float(request.POST["pre"])
     recommend=float(request.POST["recommend"])
     assignment=float(request.POST["assignment"])
-
+    data = '{"files":["https://mpserver.umth.top/all_comment_info/?New_code='+New_code+'&prof_name='+prof_name+'"]}'
+    response = requests.post('https://api.cloudflare.com/client/v4/zones/oJl3QmZ4r_19zoJljPdRHoBR0cEJtztjMnKBuwkq/purge_cache', headers=headers, data=data)
+    data = '{"files":["https://mpserver.umth.top/comment_info/?New_code=' + New_code + '&prof_name=' + prof_name + '"]}'
+    response = requests.post('https://api.cloudflare.com/client/v4/zones/oJl3QmZ4r_19zoJljPdRHoBR0cEJtztjMnKBuwkq/purge_cache', headers=headers, data=data)
     course_noprof=course_modle.course_noporf.objects.filter(New_code=New_code).first()
     prof=course_modle.prof_info.objects.filter(name=prof_name).first()
     course=course_modle.prof_with_course.objects.filter(course=course_noprof,prof=prof)
@@ -174,6 +183,18 @@ def submit_comment(request):
         comment.save()
         comment.result=comment.cal_result()
         comment.save()
+        duplicated_comments = course_modle.comment.objects.filter(course=comment.course, content=comment.content)
+        if len(duplicated_comments) > 1 and comment.content != "":
+            for i in range(1, len(duplicated_comments)):
+                print(duplicated_comments[i].content)
+                duplicated_comments[i].delete()
+                return JsonResponse({"code": "0", "msg": "Some unknown errors have occurred"})
+        duplicated_comments = course_modle.comment.objects.filter(course=comment.course, content=comment.content,result=comment.result)
+        if len(duplicated_comments) > 3 and comment.content == "":
+            for i in range(1, len(duplicated_comments)):
+                print(duplicated_comments[i].content)
+                duplicated_comments[i].delete()
+                return JsonResponse({"code": "0", "msg": "Some unknown errors have occurred"})
         course.comments+=1
         course.attendance=(course.attendance*(course.comments-1)+comment.attendance)/course.comments
         course.grade=(course.grade*(course.comments-1)+comment.grade)/course.comments

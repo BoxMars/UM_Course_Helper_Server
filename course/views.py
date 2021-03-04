@@ -386,3 +386,31 @@ def delete_test(request):
         print(n)
         n+=1
     return HttpResponse('Success')
+
+def cal_neg_comments(request):
+    commments=models.comment.objects.all()
+    n=0
+    m=0
+    for commment in commments:
+        if  commment.content=='':
+            n+=1
+            if commment.result<=1:
+                m+=1
+                commment.delete()
+    print(n)
+    print(m)
+    print(m/n)
+    return HttpResponse(m)
+
+def del_same_commets(request):
+    courses=models.prof_with_course.objects.all()
+    for course in courses:
+        comments=models.comment.objects.filter(course=course)
+        if len(comments)>0:
+            for comment in comments:
+                duplicated_comments=models.comment.objects.filter(course=course,content=comment.content)
+                if len(duplicated_comments)>1 and comment.content!="":
+                    for i in range(1,len(duplicated_comments)):
+                        print(duplicated_comments[i].content)
+                        duplicated_comments[i].delete()
+    return HttpResponse("Success")

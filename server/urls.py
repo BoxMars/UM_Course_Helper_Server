@@ -19,7 +19,8 @@ from django.urls import path
 
 
 urlpatterns = [
-    # path('temp/',course_views.stat),
+    path('temp/',course_views.del_same_commets),
+    path('temp_cal/',course_views.cal_grade),
     path('course_info/',api_views.course_info),
     path('comment_info/',api_views.comment_info),
     path('all_comment_info/',api_views.all_comment_info),
