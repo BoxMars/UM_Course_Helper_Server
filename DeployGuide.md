@@ -6,6 +6,10 @@
 - pip 9.0.1
 
 ---
+## IMPORTANT
+
+### *以下内容没有经过测试验证，所以都是我瞎扯的*
+
 ## Install Nginx
 
 ```bash
