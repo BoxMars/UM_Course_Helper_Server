@@ -191,6 +191,11 @@ or
 ```
 
 
+### fuzzy search
+```
+url/fuzzy_search?text=Test&type=course/prof
+```
+
 ### 请求统计数据
 ```
 url/get_stat
