@@ -4,6 +4,7 @@ from course import models as course_modle
 import json
 import requests
 
+
 def course_info(request):
     '''
         :param request:
@@ -28,22 +29,23 @@ def course_info(request):
             ]
         }
         '''
-    context={
+    context = {
         "course_info": {},
         "prof_info": []
     }
-    New_code=request.GET.get('New_code')
-    course=course_modle.course_noporf.objects.filter(New_code=New_code)
-    if len(course)==1:
-        course=course.first()
-        context['course_info']=course.info()
-        prof_course_list=course_modle.prof_with_course.objects.filter(course=course)
+    New_code = request.GET.get('New_code')
+    course = course_modle.course_noporf.objects.filter(New_code=New_code)
+    if len(course) == 1:
+        course = course.first()
+        context['course_info'] = course.info()
+        prof_course_list = course_modle.prof_with_course.objects.filter(course=course)
         for prof_course in prof_course_list:
             # prof=prof_course.prof
             context['prof_info'].append(prof_course.info())
-        return HttpResponse(json.dumps(context),content_type="application/json")
+        return HttpResponse(json.dumps(context), content_type="application/json")
     else:
-        return JsonResponse({"course_info":"Error Code","msg":"Course doesn't exist","prof_info":[]})
+        return JsonResponse({"course_info": "Error Code", "msg": "Course doesn't exist", "prof_info": []})
+
 
 def comment_info(request):
     '''
@@ -90,32 +92,33 @@ def comment_info(request):
         "prof_info": {},
         "comments": [],
     }
-    New_code=request.GET.get("New_code")
-    course=course_modle.course_noporf.objects.filter(New_code=New_code).first()
-    prof_name=request.GET.get("prof_name")
-    prof=course_modle.prof_info.objects.filter(name=prof_name).first()
-    course_prof=course_modle.prof_with_course.objects.filter(prof=prof,course=course).first()
-    context["course_info"]=course.info()
-    context["prof_info"]=course_prof.info()
-    comments=course_modle.comment.objects.filter(course=course_prof)
-    if len(comments) !=0:
+    New_code = request.GET.get("New_code")
+    course = course_modle.course_noporf.objects.filter(New_code=New_code).first()
+    prof_name = request.GET.get("prof_name")
+    prof = course_modle.prof_info.objects.filter(name=prof_name).first()
+    course_prof = course_modle.prof_with_course.objects.filter(prof=prof, course=course).first()
+    context["course_info"] = course.info()
+    context["prof_info"] = course_prof.info()
+    comments = course_modle.comment.objects.filter(course=course_prof)
+    if len(comments) != 0:
         for comment in comments:
-            if comment.info()["content"] != "" :
+            if comment.info()["content"] != "":
                 context["comments"].append(comment.info())
         context["comments"].reverse()
         return HttpResponse(json.dumps(context), content_type="application/json")
     else:
         context["comments"].append({
-                    "content":"No comment yet",
-                    "grade":" 0",
-                    "attendance":"0 ",
-                    "hard":" 0",
-                    "reward":"0 ",
-                    "pre":" 0",
-                    "recommend":"0 ",
-                    "assignment":" 0",
-                    "pub_time": "None",
-                })
+            "content": "No comment yet",
+            "grade": " 0",
+            "attendance": "0 ",
+            "hard": " 0",
+            "reward": "0 ",
+            "pre": " 0",
+            "recommend": "0 ",
+            "assignment": " 0",
+            "pub_time": "None",
+        })
+
 
 def submit_comment(request):
     '''
@@ -140,27 +143,27 @@ def submit_comment(request):
             "msg":"",
         }
     '''
-    New_code=request.POST["New_code"]
-    prof_name=request.POST["prof_name"]
-    content=request.POST["content"]
-    grade=float(request.POST["grade"])
-    attendance=float(request.POST["attendance"])
-    hard=float(request.POST["hard"])
-    reward=float(request.POST["reward"])
-    pre=float(request.POST["pre"])
-    recommend=float(request.POST["recommend"])
-    assignment=float(request.POST["assignment"])
-    course_noprof=course_modle.course_noporf.objects.filter(New_code=New_code).first()
-    prof=course_modle.prof_info.objects.filter(name=prof_name).first()
-    course=course_modle.prof_with_course.objects.filter(course=course_noprof,prof=prof)
-    stat=course_modle.statistics.objects.filter(name=course_noprof.Offering_Unit)
-    if len(stat) >0:
-        stat=stat.first()
-        stat.comment_num+=1
+    New_code = request.POST["New_code"]
+    prof_name = request.POST["prof_name"]
+    content = request.POST["content"]
+    grade = float(request.POST["grade"])
+    attendance = float(request.POST["attendance"])
+    hard = float(request.POST["hard"])
+    reward = float(request.POST["reward"])
+    pre = float(request.POST["pre"])
+    recommend = float(request.POST["recommend"])
+    assignment = float(request.POST["assignment"])
+    course_noprof = course_modle.course_noporf.objects.filter(New_code=New_code).first()
+    prof = course_modle.prof_info.objects.filter(name=prof_name).first()
+    course = course_modle.prof_with_course.objects.filter(course=course_noprof, prof=prof)
+    stat = course_modle.statistics.objects.filter(name=course_noprof.Offering_Unit)
+    if len(stat) > 0:
+        stat = stat.first()
+        stat.comment_num += 1
         stat.save()
-    if len(course)>0:
-        course=course.first()
-        comment=course_modle.comment(
+    if len(course) > 0:
+        course = course.first()
+        comment = course_modle.comment(
             course=course,
             content=content,
             grade=grade,
@@ -172,7 +175,7 @@ def submit_comment(request):
             assignment=assignment
         )
         comment.save()
-        comment.result=comment.cal_result()
+        comment.result = comment.cal_result()
         comment.save()
         duplicated_comments = course_modle.comment.objects.filter(course=comment.course, content=comment.content)
         if len(duplicated_comments) > 1 and comment.content != "":
@@ -180,22 +183,23 @@ def submit_comment(request):
                 print(duplicated_comments[i].content)
                 duplicated_comments[i].delete()
                 return JsonResponse({"code": "0", "msg": "Some unknown errors have occurred"})
-        duplicated_comments = course_modle.comment.objects.filter(course=comment.course, content=comment.content,result=comment.result)
+        duplicated_comments = course_modle.comment.objects.filter(course=comment.course, content=comment.content, result=comment.result)
         if len(duplicated_comments) > 3 and comment.content == "":
             for i in range(1, len(duplicated_comments)):
                 print(duplicated_comments[i].content)
                 duplicated_comments[i].delete()
                 return JsonResponse({"code": "0", "msg": "Some unknown errors have occurred"})
-        course.comments+=1
-        course.attendance=(course.attendance*(course.comments-1)+comment.attendance)/course.comments
-        course.grade=(course.grade*(course.comments-1)+comment.grade)/course.comments
-        course.hard=(course.hard*(course.comments-1)+comment.hard)/course.comments
-        course.reward=(course.reward*(course.comments-1)+comment.reward)/course.comments
+        course.comments += 1
+        course.attendance = (course.attendance * (course.comments - 1) + comment.attendance) / course.comments
+        course.grade = (course.grade * (course.comments - 1) + comment.grade) / course.comments
+        course.hard = (course.hard * (course.comments - 1) + comment.hard) / course.comments
+        course.reward = (course.reward * (course.comments - 1) + comment.reward) / course.comments
         course.result = (course.result * (course.comments - 1) + comment.result) / course.comments
         course.save()
         return JsonResponse({"code": "1", "msg": "Your comment has been submitted successfully"})
     else:
-        return JsonResponse({"code":"0","msg":"Some unknown errors have occurred"})
+        return JsonResponse({"code": "0", "msg": "Some unknown errors have occurred"})
+
 
 def submit_comment_get(request):
     '''
@@ -249,6 +253,7 @@ def submit_comment_get(request):
     else:
         return JsonResponse({"code": "0", "msg": "Some unknown errors have occurred"})
 
+
 def prof_info(request):
     '''
     :param request:
@@ -284,23 +289,14 @@ def prof_info(request):
         }
     '''
 
-    prof_name=request.GET.get("name")
-    prof=course_modle.prof_info.objects.filter(name=prof_name)
+    prof_name = request.GET.get("name")
+    prof = course_modle.prof_info.objects.filter(name=prof_name)
     if len(prof) == 1:
-        prof=prof.first()
-        prof_with_courses=course_modle.prof_with_course.objects.filter(prof=prof)
-        context = {
-            "prof_info": {},
-            "course": [],
-        }
-        context["prof_info"]= prof.info()
+        prof = prof.first()
+        prof_with_courses = course_modle.prof_with_course.objects.filter(prof=prof)
+        context = {"prof_info": prof.info(), "course": []}
         for i in prof_with_courses:
-            course={
-                "course_info":{},
-                "prof_info":{}
-            }
-            course["course_info"]=i.course.info()
-            course["prof_info"]=i.info()
+            course = {"course_info": i.course.info(), "prof_info": i.info()}
             context["course"].append(course)
         return HttpResponse(json.dumps(context), content_type="application/json")
     # else:
@@ -318,23 +314,29 @@ def fuzzy_search(request):
     :param request:
         /fuzzy_search?text=xxx&type=course
         /fuzzy_search?text=xxx&type=prof
+        /fuzzy_search?text=xxx&type=title
     :return:
     '''
-    context={
-        "course_info":[],
-        "prof_info":[]
+    context = {
+        "course_info": [],
+        "prof_info": []
     }
-    type=request.GET.get("type")
-    text=request.GET.get("text")
-    if type=="course":
-        courses=course_modle.course_noporf.objects.filter(New_code__istartswith=text)
+    type = request.GET.get("type")
+    text = request.GET.get("text")
+    if type == "course":
+        courses = course_modle.course_noporf.objects.filter(New_code__istartswith=text)
         for course in courses:
             context["course_info"].append(course.info())
-    elif type=="prof":
-        profs=course_modle.prof_info.objects.filter(name__istartswith=text)
+    elif type == "prof":
+        profs = course_modle.prof_info.objects.filter(name__istartswith=text)
         for prof in profs:
             context["prof_info"].append(prof.info())
+    elif type=='title':
+        courses = course_modle.course_noporf.objects.filter(courseTitleEng__istartswith=text)
+        for course in courses:
+            context["course_info"].append(course.info())
     return HttpResponse(json.dumps(context), content_type="application/json")
+
 
 # def faculty_detail(faculty):
 #     context={
@@ -375,39 +377,39 @@ def get_stat(request):
         }
     '''
 
-    context={
-        "course_num":0,
-        "prof_num":0,
-        "comment_num":0,
+    context = {
+        "course_num": 0,
+        "prof_num": 0,
+        "comment_num": 0,
 
         "faculty_detail": {
             "FAH": {
-                "course_num":0,
-                "comment_num":0,
+                "course_num": 0,
+                "comment_num": 0,
             },
             "FBA": {
-                "course_num":0,
-                "comment_num":0,
+                "course_num": 0,
+                "comment_num": 0,
             },
             "FED": {
-                "course_num":0,
-                "comment_num":0,
+                "course_num": 0,
+                "comment_num": 0,
             },
             "FHS": {
-                "course_num":0,
-                "comment_num":0,
+                "course_num": 0,
+                "comment_num": 0,
             },
             "FLL": {
-                "course_num":0,
-                "comment_num":0,
+                "course_num": 0,
+                "comment_num": 0,
             },
             "FSS": {
-                "course_num":0,
-                "comment_num":0,
+                "course_num": 0,
+                "comment_num": 0,
             },
             "FST": {
-                "course_num":0,
-                "comment_num":0,
+                "course_num": 0,
+                "comment_num": 0,
             },
         }
     }
@@ -420,13 +422,13 @@ def get_stat(request):
     context["faculty_detail"]["FST"] = course_modle.statistics.objects.filter(name="FST").first().info2()
 
     # context["course_num"]=len(course_modle.course_noporf.objects.all())
-    context["course_num"]=1643
+    context["course_num"] = 1643
     # context["prof_num"]=len(course_modle.prof_info.objects.all())
-    context["prof_num"]=907
+    context["prof_num"] = 907
     # context["comment_num"]=len(course_modle.comment.objects.all())
 
-
     return HttpResponse(json.dumps(context), content_type="application/json")
+
 
 def all_comment_info(request):
     '''
@@ -472,30 +474,31 @@ def all_comment_info(request):
         "prof_info": {},
         "comments": [],
     }
-    New_code=request.GET.get("New_code")
-    course=course_modle.course_noporf.objects.filter(New_code=New_code).first()
-    prof_name=request.GET.get("prof_name")
-    prof=course_modle.prof_info.objects.filter(name=prof_name).first()
-    course_prof=course_modle.prof_with_course.objects.filter(prof=prof,course=course).first()
-    context["course_info"]=course.info()
-    context["prof_info"]=course_prof.info()
-    comments=course_modle.comment.objects.filter(course=course_prof)
-    if len(comments) !=0:
+    New_code = request.GET.get("New_code")
+    course = course_modle.course_noporf.objects.filter(New_code=New_code).first()
+    prof_name = request.GET.get("prof_name")
+    prof = course_modle.prof_info.objects.filter(name=prof_name).first()
+    course_prof = course_modle.prof_with_course.objects.filter(prof=prof, course=course).first()
+    context["course_info"] = course.info()
+    context["prof_info"] = course_prof.info()
+    comments = course_modle.comment.objects.filter(course=course_prof)
+    if len(comments) != 0:
         for comment in comments:
             context["comments"].append(comment.info())
         context["comments"].reverse()
         return HttpResponse(json.dumps(context), content_type="application/json")
     else:
         context["comments"].append({
-                    "content":"No comment yet",
-                    "grade":" 0",
-                    "attendance":"0 ",
-                    "hard":" 0",
-                    "reward":"0 ",
-                    "pre":" 0",
-                    "recommend":"0 ",
-                    "assignment":" 0",
-                })
+            "content": "No comment yet",
+            "grade": " 0",
+            "attendance": "0 ",
+            "hard": " 0",
+            "reward": "0 ",
+            "pre": " 0",
+            "recommend": "0 ",
+            "assignment": " 0",
+        })
+
 
 def get_vote(request):
     '''
@@ -504,13 +507,13 @@ def get_vote(request):
     :return:
     '''
 
-    id=request.GET.get('id')
-    type=request.GET.get('type')
-    comment=course_modle.comment.objects.filter(id=id)
+    id = request.GET.get('id')
+    type = request.GET.get('type')
+    comment = course_modle.comment.objects.filter(id=id)
 
-    if type=='up':
-        comment.upvote+=1
-    elif type=='down':
-        comment.downvote+=1
+    if type == 'up':
+        comment.upvote += 1
+    elif type == 'down':
+        comment.downvote += 1
 
     comment.save()

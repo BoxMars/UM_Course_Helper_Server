@@ -193,7 +193,7 @@ or
 
 ### fuzzy search
 ```
-url/fuzzy_search?text=Test&type=course/prof
+url/fuzzy_search?text=Test&type=course/prof/title
 ```
 
 ### 请求统计数据
