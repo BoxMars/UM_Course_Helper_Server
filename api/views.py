@@ -323,16 +323,18 @@ def fuzzy_search(request):
     type = request.GET.get("type")
     text = request.GET.get("text")
     if type == "course" and len(text)>=4:
-        courses = course_modle.course_noporf.objects.filter(New_code__istartswith=text)
+        courses = course_modle.course_noporf.objects.filter(New_code__icontains=text)
         for course in courses:
             context["course_info"].append(course.info())
-        courses = course_modle.course_noporf.objects.filter(courseTitleEng__istartswith=text)
+        courses = course_modle.course_noporf.objects.filter(courseTitleEng__icontains=text)
         for course in courses:
             context["course_info"].append(course.info())
-    elif type == "prof":
-        profs = course_modle.prof_info.objects.filter(name__istartswith=text)
-        for prof in profs:
-            context["prof_info"].append(prof.info())
+        profs = course_modle.prof_info.objects.filter(name__icontains=text)
+        for i in range(len(profs)):
+            context["prof_info"].append(profs[i].info())
+            courses=course_modle.prof_with_course.objects.filter(prof=profs[i])
+            for course in courses:
+                context["prof_info"][i]["courses"].append(course.info())
 
     return HttpResponse(json.dumps(context), content_type="application/json")
 

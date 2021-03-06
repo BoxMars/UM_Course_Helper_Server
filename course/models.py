@@ -51,7 +51,8 @@ class prof_info(models.Model):
 
     def info(self):  # 调用本函数将会返回教师相关信息
         content = {
-            "name": self.name
+            "name": self.name,
+            "courses": []
         }
         return content
 
