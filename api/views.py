@@ -329,7 +329,7 @@ def fuzzy_search(request):
         courses = course_modle.course_noporf.objects.filter(courseTitleEng__icontains=text)
         for course in courses:
             context["course_info"].append(course.info())
-    elif type=="prof"and len(text)>=3:
+    elif type=="prof"and len(text)>=4:
         profs = course_modle.prof_info.objects.filter(name__icontains=text)
         for i in range(len(profs)):
             context["prof_info"].append(profs[i].info())
