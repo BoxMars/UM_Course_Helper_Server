@@ -312,17 +312,15 @@ def fuzzy_search(request):
     '''
 
     :param request:
-        /fuzzy_search?text=xxx&type=course
-        /fuzzy_search?text=xxx&type=prof
+        /fuzzy_search?text=xxx
     :return:
     '''
     context = {
         "course_info": [],
         "prof_info": []
     }
-    type = request.GET.get("type")
     text = request.GET.get("text")
-    if type == "course" and len(text)>=4:
+    if len(text)>=4:
         courses = course_modle.course_noporf.objects.filter(New_code__icontains=text)
         for course in courses:
             context["course_info"].append(course.info())
