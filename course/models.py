@@ -34,6 +34,18 @@ class course_noporf(models.Model):
     Medium_of_Instruction = models.CharField(max_length=100, default='')  # 授课语言
 
     def info(self):  # 调用本函数将会返回课程相关信息（无对应教师）
+        content = {
+            "New_code": self.New_code,
+            "Offering_Unit": self.Offering_Unit,
+            "Old_code": self.Old_code,
+            "courseTitleEng": self.courseTitleEng,
+            "courseTitleChi": self.courseTitleChi,
+            "Credits": float(self.Credits),
+            "Medium_of_Instruction": self.Medium_of_Instruction,
+            "Offering_Department": self.Offering_Department
+        }
+        return content
+    def description(self):  # 调用本函数将会返回课程相关信息（无对应教师）
         headers=catalog.headers
         params = (
             ('course_code', self.New_code),

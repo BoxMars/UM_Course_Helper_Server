@@ -37,7 +37,7 @@ def course_info(request):
     course = course_modle.course_noporf.objects.filter(New_code=New_code)
     if len(course) == 1:
         course = course.first()
-        context['course_info'] = course.info()
+        context['course_info'] = course.description()
         prof_course_list = course_modle.prof_with_course.objects.filter(course=course)
         for prof_course in prof_course_list:
             # prof=prof_course.prof
