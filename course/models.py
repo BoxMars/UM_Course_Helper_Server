@@ -1,8 +1,10 @@
+import requests
 from django.db import models
 from django.utils import timezone
 import uuid
 import pytz
 from django.utils.datetime_safe import datetime
+from . import catalog
 
 
 class course(models.Model):
@@ -32,6 +34,12 @@ class course_noporf(models.Model):
     Medium_of_Instruction = models.CharField(max_length=100, default='')  # 授课语言
 
     def info(self):  # 调用本函数将会返回课程相关信息（无对应教师）
+        headers=catalog.headers
+        params = (
+            ('course_code', self.New_code),
+        )
+        response = requests.get('https://api.data.um.edu.mo/service/academic/course_catalog/v1.0.0/all', headers=headers, params=params)
+        result=(response.json())["_embedded"][0]
         content = {
             "New_code": self.New_code,
             "Offering_Unit": self.Offering_Unit,
@@ -41,6 +49,8 @@ class course_noporf(models.Model):
             "Credits": float(self.Credits),
             "Medium_of_Instruction": self.Medium_of_Instruction,
             "Offering_Department": self.Offering_Department,
+            "courseDescription": result["courseDescription"],
+            "Intended_Learning_Outcomes":result['ilo']
         }
         return content
 

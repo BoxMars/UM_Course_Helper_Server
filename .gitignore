@@ -9,3 +9,4 @@
 /static
 db.sqlite3
 /__pycache__
+course/catalog.py
