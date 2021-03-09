@@ -51,19 +51,33 @@ class course_noporf(models.Model):
             ('course_code', self.New_code),
         )
         response = requests.get('https://api.data.um.edu.mo/service/academic/course_catalog/v1.0.0/all', headers=headers, params=params)
-        result=(response.json())["_embedded"][0]
-        content = {
-            "New_code": self.New_code,
-            "Offering_Unit": self.Offering_Unit,
-            "Old_code": self.Old_code,
-            "courseTitleEng": self.courseTitleEng,
-            "courseTitleChi": self.courseTitleChi,
-            "Credits": float(self.Credits),
-            "Medium_of_Instruction": self.Medium_of_Instruction,
-            "Offering_Department": self.Offering_Department,
-            "courseDescription": result["courseDescription"],
-            "Intended_Learning_Outcomes":result['ilo']
-        }
+        if len((response.json())["_embedded"]) >0:
+            result=(response.json())["_embedded"][0]
+            content = {
+                "New_code": self.New_code,
+                "Offering_Unit": self.Offering_Unit,
+                "Old_code": self.Old_code,
+                "courseTitleEng": self.courseTitleEng,
+                "courseTitleChi": self.courseTitleChi,
+                "Credits": float(self.Credits),
+                "Medium_of_Instruction": self.Medium_of_Instruction,
+                "Offering_Department": self.Offering_Department,
+                "courseDescription": result["courseDescription"],
+                "Intended_Learning_Outcomes":result['ilo']
+            }
+        else:
+            content = {
+                "New_code": self.New_code,
+                "Offering_Unit": self.Offering_Unit,
+                "Old_code": self.Old_code,
+                "courseTitleEng": self.courseTitleEng,
+                "courseTitleChi": self.courseTitleChi,
+                "Credits": float(self.Credits),
+                "Medium_of_Instruction": self.Medium_of_Instruction,
+                "Offering_Department": self.Offering_Department,
+                "courseDescription": "",
+                "Intended_Learning_Outcomes": ""
+            }
         return content
 
 

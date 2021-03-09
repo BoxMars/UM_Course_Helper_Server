@@ -45,6 +45,9 @@ def course_info(request):
         for prof_course in prof_course_list:
             # prof=prof_course.prof
             context['prof_info'].append(prof_course.info())
+        # result=HttpResponse(json.dumps(context), content_type="application/json")
+        # result.setdefault("Access-Control-Allow-Origin","https://umeh.top")
+        # return result
         return HttpResponse(json.dumps(context), content_type="application/json")
     else:
         return JsonResponse({"course_info": "Error Code", "msg": "Course doesn't exist", "prof_info": []})
