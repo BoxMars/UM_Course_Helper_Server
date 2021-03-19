@@ -26,7 +26,7 @@ mccabe==0.6.1
 mysqlclient
 numpy==1.19.1
 pandas==1.1.1
-Pillow==8.0.1
+Pillow==8.1.1
 pipreqs==0.4.10
 PuLP==2.3.1
 pycparser==2.20
