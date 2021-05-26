@@ -94,11 +94,10 @@ server{
 		root /home/admin/website;
 		index index.html;
 	}
-	rewrite  ^/reviews/(.*)/(.*)$ /reviews.html?New_code=$1&prof_name=$2 last;
-	rewrite  ^/instructor/(.*)/(.*)$ /reviews.html?New_code=$1&prof_name=$2 last;
-	rewrite  ^/professor/(.*)$ /professor.html?New_code=$1 last;
-	rewrite  ^/course/(.*)$ /course.html?New_code=$1&prof_name=$2 last;
-	rewrite  ^/submit/(.*)/(.*)$ /submit.html?New_code=$1&prof_name=$2 last;
+ 	rewrite  ^/reviews/(.*)/(.*)$ /reviews.html?course=$1&instructor=$2 last;
+	rewrite  ^/instructor/(.*)$ /search.html?keyword=$1&instructor=true last;
+	rewrite  ^/professor/(.*)$ /search.html?keyword=$1&instructor=true last;
+	rewrite  ^/course/(.*)$ /course.html?course=$1&instructor=$2 last;
 }
 upstream real_ga_servers {
         server www.google-analytics.com:443 weight=5 max_fails=0;
