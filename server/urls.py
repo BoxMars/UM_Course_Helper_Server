@@ -19,8 +19,6 @@ from django.urls import path
 
 
 urlpatterns = [
-    path('temp/',course_views.del_same_commets),
-    path('temp_cal/',course_views.cal_grade),
     path('course_info/',api_views.course_info),
     path('comment_info/',api_views.comment_info),
     path('all_comment_info/',api_views.all_comment_info),
@@ -29,7 +27,4 @@ urlpatterns = [
     path('prof_info/',api_views.prof_info),
     path('fuzzy_search/',api_views.fuzzy_search),
     path('get_stat/',api_views.get_stat),
-    path('prof/',course_views.import_prof),
-    path('course/',course_views.import_course),
-    path('prof_couse/',course_views.import_prof_course),
 ]

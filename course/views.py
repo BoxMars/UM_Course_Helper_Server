@@ -2,7 +2,7 @@ from django.shortcuts import render, HttpResponse
 import csv, os
 from . import models
 from server import settings
-
+from django.utils.dateparse import parse_datetime
 '''
     "Offering_Unit": "FAH",
     "Offering_Department": "CJS",
@@ -82,214 +82,6 @@ def import_prof_course(request):
             course.save()
     return HttpResponse("success")
 
-
-def faculty_detail(faculty):
-    context = {
-        "course_num": 0,
-        "comment_num": 0,
-    }
-    num = 0
-    courses = course_modle.course_noporf.objects.filter(Offering_Unit=faculty)
-    context["course_num"] = len(courses)
-    for course in courses:
-        course_prof = course_modle.prof_with_course.objects.filter(course=course)
-        for i in course_prof:
-            comments = course_modle.comment.objects.filter(course=i)
-            context["comment_num"] += len(comments)
-    return context
-
-
-def stat(request):
-    '''
-        :param request:
-        :return:
-            {
-                "course_num": ;
-                "prof_num": ;
-                "comment_num" ;
-
-                "faculty_detail":{
-                    "FAH": {
-                        "course_num": ;
-                        "comment_num": ;
-                        };
-                    "FBA": ;
-                    "FED": ;
-                    "FHS": ;
-                    "FLL": ;
-                    "FSS": ;
-                    "FST": ;
-                    }
-            }
-        '''
-
-    context = {
-        "course_num": 0,
-        "prof_num": 0,
-        "comment_num": 0,
-
-        "faculty_detail": {
-            "FAH": {
-                "course_num": 0,
-                "comment_num": 0,
-            },
-            "FBA": {
-                "course_num": 0,
-                "comment_num": 0,
-            },
-            "FED": {
-                "course_num": 0,
-                "comment_num": 0,
-            },
-            "FHS": {
-                "course_num": 0,
-                "comment_num": 0,
-            },
-            "FLL": {
-                "course_num": 0,
-                "comment_num": 0,
-            },
-            "FSS": {
-                "course_num": 0,
-                "comment_num": 0,
-            },
-            "FST": {
-                "course_num": 0,
-                "comment_num": 0,
-            },
-        }
-    }
-
-    context["course_num"] = len(course_modle.course_noporf.objects.all())
-    context["prof_num"] = len(course_modle.prof_info.objects.all())
-    context["comment_num"] = len(course_modle.comment.objects.all())
-    context["faculty_detail"]["FAH"] = faculty_detail("FAH")
-    context["faculty_detail"]["FBA"] = faculty_detail("FBA")
-    context["faculty_detail"]["FED"] = faculty_detail("FED")
-    context["faculty_detail"]["FHS"] = faculty_detail("FHS")
-    context["faculty_detail"]["FLL"] = faculty_detail("FLL")
-    context["faculty_detail"]["FSS"] = faculty_detail("FSS")
-    context["faculty_detail"]["FST"] = faculty_detail("FST")
-
-    data = models.statistics(
-        name="FAH",
-        course_num=context["faculty_detail"]["FAH"]["course_num"],
-        comment_num=context["faculty_detail"]["FAH"]["comment_num"]
-    )
-    data.save()
-
-    data = models.statistics(
-        name="FBA",
-        course_num=context["faculty_detail"]["FBA"]["course_num"],
-        comment_num=context["faculty_detail"]["FBA"]["comment_num"]
-    )
-    data.save()
-
-    data = models.statistics(
-        name="FED",
-        course_num=context["faculty_detail"]["FED"]["course_num"],
-        comment_num=context["faculty_detail"]["FED"]["comment_num"]
-    )
-    data.save()
-
-    data = models.statistics(
-        name="FHS",
-        course_num=context["faculty_detail"]["FHS"]["course_num"],
-        comment_num=context["faculty_detail"]["FHS"]["comment_num"]
-    )
-    data.save()
-
-    data = models.statistics(
-        name="FLL",
-        course_num=context["faculty_detail"]["FLL"]["course_num"],
-        comment_num=context["faculty_detail"]["FLL"]["comment_num"]
-    )
-    data.save()
-
-    data = models.statistics(
-        name="FSS",
-        course_num=context["faculty_detail"]["FSS"]["course_num"],
-        comment_num=context["faculty_detail"]["FSS"]["comment_num"]
-    )
-    data.save()
-
-    data = models.statistics(
-        name="FST",
-        course_num=context["faculty_detail"]["FST"]["course_num"],
-        comment_num=context["faculty_detail"]["FST"]["comment_num"]
-    )
-    data.save()
-
-    return HttpResponse("success")
-
-
-def test_course(request):
-    courses = models.course_noporf.objects.all()
-    for course in courses:
-        if course.Credits == '':
-            course.Credits = '0.0'
-            course.save()
-    return HttpResponse("Success")
-
-
-def index(request):
-    return HttpResponse('Test')
-
-
-def importclass(request):
-    n = 1
-    d = models.course.objects.all()
-    for i in d:
-        if len(models.course_noporf.objects.filter(New_code=i.New_code)) == 0:
-            course = models.course_noporf(
-                Offering_Unit=i.Offering_Unit,
-                Offering_Department=i.Offering_Department,
-                New_code=i.New_code,
-                Old_code=i.Old_code,
-                courseTitleEng=i.courseTitleEng,
-                courseTitleChi=i.courseTitleChi,
-                Credits=i.Credits,
-                Course_Duration=i.Course_Duration,
-                Medium_of_Instruction=i.Medium_of_Instruction
-            )
-            course.save()
-        print(n)
-        n += 1
-    return HttpResponse('Success')
-
-
-def importprof(request):
-    n = 1
-    d = models.course.objects.all()
-    for i in d:
-        if len(models.prof_info.objects.filter(name=i.Teacher_Information)) == 0:
-            prof = models.prof_info(
-                name=i.Teacher_Information
-            )
-            prof.save()
-        print(n)
-        n += 1
-    return HttpResponse('Success')
-
-
-def connect_prof_course(request):
-    n = 1
-    d = models.course.objects.all()
-    for i in d:
-        if len(models.prof_with_course.objects.filter(prof=models.prof_info.objects.filter(name=i.Teacher_Information).first(),
-                                                      course=models.course_noporf.objects.filter(New_code=i.New_code).first()
-                                                      )
-               ) == 0:
-            course = models.prof_with_course(
-                prof=models.prof_info.objects.filter(name=i.Teacher_Information).first(),
-                course=models.course_noporf.objects.filter(New_code=i.New_code).first()
-            )
-            course.save()
-        print(n)
-        n += 1
-    return HttpResponse('Success')
-
-
 def importcomment(request):
     num = 1
     path = os.path.join(settings.BASE_DIR, 'static')
@@ -358,81 +150,94 @@ def importcomment(request):
     return HttpResponse('Success')
 
 
-def cal_grade(request):
-    n = 0
-    d = models.prof_with_course.objects.all()
-    for course in d:
-        comments = models.comment.objects.filter(course=course)
-        grade = 0.0
-        if len(comments) != 0:
-            for comment in comments:
-                grade += comment.hard
-            grade = grade / len(comments)
-            course.hard = grade
 
-        grade = 0.0
-        if len(comments) != 0:
-            for comment in comments:
-                grade += comment.result
-            grade = grade / len(comments)
-            course.result = grade
-
-        grade = 0.0
-        if len(comments) != 0:
-            for comment in comments:
-                grade += comment.grade
-            grade = grade / len(comments)
-            course.grade = grade
-
-        grade = 0.0
-        if len(comments) != 0:
-            for comment in comments:
-                grade += comment.reward
-            grade = grade / len(comments)
-            course.reward = grade
-        course.save()
-        print(grade, n)
-        n += 1
-    return HttpResponse('Success')
-
-
-def delete_test(request):
-    prof = models.prof_info.objects.filter(name="TEST").first()
-    course = models.prof_with_course.objects.filter(prof=prof).first()
-    comments = models.comment.objects.filter(course=course)
-    n = 0
-    for comment in comments:
-        comment.delete()
-        print(n)
-        n += 1
-    return HttpResponse('Success')
-
-
-def cal_neg_comments(request):
-    comments = models.comment.objects.all()
-    n = 0
-    m = 0
-    for comment in comments:
-        if comment.content == '':
+def importdata(request):
+    n=0
+    # path = os.path.join(settings.BASE_DIR, 'static')
+    # path = os.path.join(path, 'main_course_course_noporf.csv')
+    # csvFile = open(path, "r", encoding='utf-8')
+    # reader = csv.reader(csvFile)
+    # for item in reader:
+    #     new=models.course_noporf(Offering_Unit=item[1],
+    #                              Offering_Department=item[2],
+    #                              New_code=item[3],
+    #                              Old_code=item[4],
+    #                              courseTitleEng=item[5],
+    #                              courseTitleChi=item[6],
+    #                              Course_Duration=item[7],
+    #                              Medium_of_Instruction=item[8],
+    #                              Credits=item[9],
+    #                              temp=item[0])
+    #     new.save()
+    #     print(n)
+    #     n += 1
+    # path = os.path.join(settings.BASE_DIR, 'static')
+    # path = os.path.join(path, 'main_course_prof_info.csv')
+    # csvFile = open(path, "r", encoding='utf-8')
+    # reader = csv.reader(csvFile)
+    # for item in reader:
+    #     print(item[1])
+    #     new=models.prof_info(name=item[1],
+    #                          temp=item[0])
+    #     new.save()
+    #     print(n)
+    #     n+=1
+    # path = os.path.join(settings.BASE_DIR, 'static')
+    # path = os.path.join(path, 'main_course_prof_with_course.csv')
+    # csvFile = open(path, "r", encoding='utf-8')
+    # reader = csv.reader(csvFile)
+    # for item in reader:
+    #     course=models.course_noporf.objects.filter(temp=item[1])
+    #     if len(course)>0:
+    #         course=course.first()
+    #         prof=models.prof_info.objects.filter(temp=item[2])
+    #         if len(prof)>0:
+    #             prof=prof.first()
+    #             new=models.prof_with_course(
+    #                 temp=item[0],
+    #                 course=course,
+    #                 prof=prof,
+    #                 grade=item[3],
+    #                 comments=item[4],
+    #                 attendance=item[5],
+    #                 hard=item[6],
+    #                 reward=item[7],
+    #                 result=item[8]
+    #             )
+    #             new.save()
+    #             print(n)
+    #             n += 1
+    path = os.path.join(settings.BASE_DIR, 'static')
+    path = os.path.join(path, 'main_course_comment.csv')
+    csvFile = open(path, "r", encoding='utf-8')
+    reader = csv.reader(csvFile)
+    for item in reader:
+        course=models.prof_with_course.objects.filter(temp=item[10])
+        if len(course)>0:
+            try:
+                course=course.first()
+                new=models.comment(content=item[1],
+                                   attendance=item[2],
+                                   pre=item[3],
+                                   grade=item[4],
+                                   hard=item[5],
+                                   reward=item[6],
+                                   recommend=item[7],
+                                   assignment=item[8],
+                                   pub_time=parse_datetime(item[9]),
+                                   course=course,
+                                   result=item[11])
+                new.save()
+            except:
+                continue
+            print(n)
             n += 1
-            if comment.result <= 1:
-                m += 1
-                comment.delete()
-    print(n)
-    print(m)
-    print(m / n)
-    return HttpResponse(m)
+    return HttpResponse('Success')
 
 
-def del_same_commets(request):
-    courses = models.prof_with_course.objects.all()
-    for course in courses:
-        comments = models.comment.objects.filter(course=course)
-        if len(comments) > 0:
-            for comment in comments:
-                duplicated_comments = models.comment.objects.filter(course=course, content=comment.content)
-                if len(duplicated_comments) > 1 and comment.content != "":
-                    for i in range(1, len(duplicated_comments)):
-                        print(duplicated_comments[i].content)
-                        duplicated_comments[i].delete()
-    return HttpResponse("Success")
+
+
+
+
+
+
