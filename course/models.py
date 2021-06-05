@@ -6,18 +6,6 @@ from django.utils.datetime_safe import datetime
 from . import catalog
 
 
-# class course(models.Model):
-#     Offering_Unit = models.CharField(max_length=100, default='')
-#     Offering_Department = models.CharField(max_length=100, default='')
-#     New_code = models.CharField(max_length=100, default='')
-#     Old_code = models.CharField(max_length=100, default='')
-#     courseTitleEng = models.CharField(max_length=100, default='')
-#     courseTitleChi = models.CharField(max_length=100, default='')
-#     Credits = models.CharField(max_length=100, default='')
-#     Course_Duration = models.CharField(max_length=100, default='')
-#     Medium_of_Instruction = models.CharField(max_length=100, default='')
-#     Teacher_Information = models.CharField(max_length=100, default='')
-
 
 class course_noporf(models.Model):
     Offering_Unit = models.CharField(max_length=100, default='')  # 学院
@@ -88,10 +76,7 @@ class prof_info(models.Model):
         }
         return content
 
-class offer(models.Model):
-    course=models.ForeignKey(course_noporf,on_delete=models.CASCADE)
-    is_offer=models.IntegerField(default=0)
-    year=models.IntegerField(default=0)
+
 
 class prof_with_course(models.Model):
     prof = models.ForeignKey(prof_info, on_delete=models.CASCADE)  # 指向prof_info中的教师实例
@@ -175,3 +160,17 @@ class statistics(models.Model):
             "comment": self.comment_num,
         }
         return content
+
+# class couurse_time_location(models.Model):
+#     time=models.CharField(max_length=1024)
+#     location=models.CharField(max_length=1024)
+#     num=models.IntegerField()
+#     type=models.CharField(max_length=1024)
+#
+
+class offer(models.Model):
+    course=models.ForeignKey(prof_with_course,on_delete=models.CASCADE)
+    year=models.IntegerField(default=0)
+    sem=models.IntegerField(default=0)
+    # course_list=ArrayField(couurse_time_location())
+    # course=ArrayField()
